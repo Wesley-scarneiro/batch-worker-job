@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 class Program
@@ -11,13 +10,16 @@ class Program
     {
         var environment = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")) ? "Development" : Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile($"Configurations/appsettings-{environment}.json", optional: true, reloadOnChange: true)
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "Configurations"))
+            .AddJsonFile($"appsettings-{environment}.json", optional: true, reloadOnChange: true)
             .Build();
         return configuration;
     }
 
-    private static IServiceProvider DependencyInjection()
+    /*
+        Dependency injection settings
+    */
+    private static IServiceProvider DependencyInjection(IConfiguration configuration)
     {
         var serviceProvider = new ServiceCollection()
             .BuildServiceProvider();
@@ -29,7 +31,7 @@ class Program
         try
         {
             var configuration = BuildConfiguration();
-            Console.WriteLine($"{configuration["Appsettings:Key"]}");
+            var serviceProvider = DependencyInjection(configuration);
         }
         catch (Exception ex)
         {
