@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 class Program
 {
@@ -14,6 +15,13 @@ class Program
             .AddJsonFile($"Configurations/appsettings-{environment}.json", optional: true, reloadOnChange: true)
             .Build();
         return configuration;
+    }
+
+    private static IServiceProvider DependencyInjection()
+    {
+        var serviceProvider = new ServiceCollection()
+            .BuildServiceProvider();
+        return serviceProvider;
     }
 
     private static void Main()
