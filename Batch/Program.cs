@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Batch.Extensions;
 
 class Program
 {
@@ -10,8 +11,8 @@ class Program
     {
         var environment = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")) ? "Development" : Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         var configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "Configurations"))
-            .AddJsonFile($"appsettings-{environment}.json", optional: true, reloadOnChange: true)
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile($"Configurations/appsettings-{environment}.json", optional: true, reloadOnChange: true)
             .Build();
         return configuration;
     }
@@ -22,11 +23,12 @@ class Program
     private static IServiceProvider DependencyInjection(IConfiguration configuration)
     {
         var serviceProvider = new ServiceCollection()
+            .AddRepository(configuration)
             .BuildServiceProvider();
         return serviceProvider;
     }
 
-    private static void Main()
+    public static async Task Main()
     {
         try
         {
