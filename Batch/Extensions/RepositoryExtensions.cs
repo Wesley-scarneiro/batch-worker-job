@@ -11,7 +11,6 @@ public static class RepositoryExtensions
         var dbSession = new DbSession(configuration["Appsettings:ConnectionString"]);
         service.AddSingleton(dbSession);
         service.AddSingleton<IDbContext, DbContext>();
-        service.AddSingleton<IRepository, MarketRepository>();
         return service;
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Batch.Extensions;
+using Batch.Repository;
+using Batch.Domain.Models;
 
 class Program
 {
@@ -34,6 +36,8 @@ class Program
         {
             var configuration = BuildConfiguration();
             var serviceProvider = DependencyInjection(configuration);
+            var query = SqlQuery.Select<Product>();
+            Console.WriteLine(query);
         }
         catch (Exception ex)
         {

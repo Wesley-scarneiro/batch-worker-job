@@ -1,28 +1,24 @@
-using Batch.Domain.Models;
-
 namespace Batch.Repository;
 public static class SqlQuery
 {
-    private static readonly string _insertProduct = @"
-        INSERT INTO Products (BarCode, ProductName, SupplierId, Inventory, Price) 
-        VALUES (@BarCode, @ProductName, @SupplierId, @Inventory, @Price)";
-    private static readonly string _insertSupplier = @"
-        INSERT INTO Suppliers (SupplierName, ActiveContract)
-        VALUES (@SupplierName, @ActiveContract)";
-    
-    public static string Insert<T>() // tornar essa porra dinâmica!
+    public static string Insert<T>()
     {
-        if (typeof(T) == typeof(Products))
-        {
-            return _insertProduct;
-        }
-        else if (typeof(T) == typeof(Suppliers))
-        {
-            return _insertSupplier;
-        }
-        else
-        {
-            throw new InvalidOperationException($"Model '{typeof(T).Name}' does not defined for insert operation");
-        }
+        var type = typeof(T);
+        var properties = type.GetProperties();
+        string columns = string.Join(", ", properties
+            .Where(p => !p.Name.EndsWith(type.Name + "Id"))
+            .Select(p => p.Name));
+        string parameters = string.Join(", ", properties
+            .Where(p => !p.Name.EndsWith(type.Name + "Id"))
+            .Select(p => "@" + p.Name));
+        return $"INSERT INTO {type.Name + "s"} ({columns} VALUES ({parameters}))";
+    }
+
+    public static string Select<T>()
+    {
+        var type = typeof(T);
+        var properties = type.GetProperties();
+        var columns = string.Join(", ", properties.Select(p => p.Name));
+        return $"SELECT {columns} FROM {type.Name + "s"}";
     }
 }
