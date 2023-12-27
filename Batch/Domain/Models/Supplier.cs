@@ -1,6 +1,6 @@
 namespace Batch.Domain.Models;
 
-public class Suppliers
+public class Supplier
 {
     public int? SupplierId {get; set;}
     public string? SupplierName {get; set;}
