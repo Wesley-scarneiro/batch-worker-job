@@ -33,20 +33,12 @@ class Program
         return serviceProvider;
     }
 
-    public static void Main()
+    public static async Task Main()
     {
         try
         {
             var configuration = BuildConfiguration();
             var serviceProvider = DependencyInjection(configuration);
-            var query = SqlQuery.Select<Product>();
-            Console.WriteLine(query);
-            var files = serviceProvider.GetRequiredService<FileHandler>();
-            foreach (var file in files.GetFiles())
-            {
-                Console.WriteLine(file);
-                if (file.Contains("products_create")) Console.WriteLine("\tProducts for create");
-            }
         }
         catch (Exception ex)
         {

@@ -1,4 +1,5 @@
 using Batch.Services;
+using Batch.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,8 +8,8 @@ public static class ServiceExtensions
 {
     public static IServiceCollection AddServices(this IServiceCollection service, IConfiguration configuration)
     {
-        var fileHandler = new FileHandler(configuration["Appsettings:FilesPath:Input"], configuration["Appsettings:FilesPath:Ouput"]);
-        service.AddSingleton(fileHandler);
+        var localServices = new LocalFiles(configuration["Appsettings:FilesPath:Input"], configuration["Appsettings:FilesPath:Output"]);
+        service.AddSingleton<IFileService>(localServices);
         return service;
     }
 }
