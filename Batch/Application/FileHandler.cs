@@ -17,13 +17,23 @@ public class FileHandler
         _fileService = fileService;
     }
 
-    public async Task<IEnumerable<string>> GetFiles()
+    public async Task<IEnumerable<string?>> GetFiles()
     {
         return await _fileService.GetFiles();
     }
 
-    public async Task<Stream> ReadFile(string path)
+    public async Task<Stream> ReadFile(string fileName)
     {
-        return await _fileService.ReadFile(path); //falta converter em objetos e devolver em um enumerável
+        return await _fileService.ReadFile(fileName); //falta converter em objetos e devolver em um enumerável
+    }
+
+    public async Task<bool> MoveFile(string fileName)
+    {
+        return await _fileService.Movefile(fileName);
+    }
+
+    public async Task<bool> CreateFile<T>(IEnumerable<T> records)
+    {
+        return await _fileService.CreateFile(records);
     }
 }
