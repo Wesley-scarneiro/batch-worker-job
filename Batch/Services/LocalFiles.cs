@@ -16,22 +16,53 @@ public class LocalFiles : IFileService
         _outputPath = outputPath;
     }
 
-    public async Task<IEnumerable<string>> GetFiles()
+    private static string PathCombine(string fileName, string path)
     {
-        var fileNamesCsv = await Task.Run(() => Directory.GetFiles(_inputPath, "*.csv"));
-        return fileNamesCsv;
+        return Path.Combine(path, fileName);
+    }
+    public async Task<IEnumerable<string?>> GetFiles()
+    {
+        try
+        {
+            var fileNamesCsv = await Task.Run(() => Directory.GetFiles(_inputPath, "*.csv").
+                            Select(Path.GetFileName));
+            return fileNamesCsv;
+        }
+        catch(Exception)
+        {
+            throw;
+        }
     }
 
-    public async Task<Stream> ReadFile(string path)
+    public async Task<Stream> ReadFile(string fileName)
     {
-        var bytes = await File.ReadAllBytesAsync(path);
-        var memoryStream = new MemoryStream(bytes);
-        return memoryStream;
+        try
+        {
+            var bytes = await File.ReadAllBytesAsync(PathCombine(fileName, _inputPath));
+            var memoryStream = new MemoryStream(bytes);
+            return memoryStream;
+        }
+        catch(Exception)
+        {
+            throw;
+        }
     }
 
-    public Task<bool> Movefile(string path)
+    public async Task<bool> Movefile(string fileName)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (File.Exists(PathCombine(fileName, _outputPath)))
+            {
+                await Task.Run(() => Directory.Move(PathCombine(fileName, _inputPath), PathCombine(fileName, _outputPath)));
+                return true;
+            }
+            return false;
+        }
+        catch(Exception)
+        {
+            throw;
+        }
     }
 
     public Task<bool> CreateFile<T>(IEnumerable<T> records)
