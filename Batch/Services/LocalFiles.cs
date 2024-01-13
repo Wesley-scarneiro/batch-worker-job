@@ -68,13 +68,20 @@ public class LocalFiles : IFileService
 
     public async Task<bool> CreateFile(string fileName, MemoryStream mstream)
     {
-        using var fileStream = new FileStream(Path.Combine(_outputPath, fileName), FileMode.Create, FileAccess.Write);
-        await Task.Run(() =>
+        try
         {
-            var copyMstream = new MemoryStream(mstream.ToArray());
-            copyMstream.WriteTo(fileStream);
-        });
-        if (File.Exists(PathCombine(_outputPath, fileName))) return true;
-        return false;
+            using var fileStream = new FileStream(Path.Combine(_outputPath, fileName), FileMode.Create, FileAccess.Write);
+            await Task.Run(() =>
+            {
+                var copyMstream = new MemoryStream(mstream.ToArray());
+                copyMstream.WriteTo(fileStream);
+            });
+            if (File.Exists(PathCombine(_outputPath, fileName))) return true;
+            return false;
+        }
+        catch(Exception)
+        {
+            throw;
+        }
     }
 }
