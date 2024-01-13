@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Batch.Extensions;
-using Batch.Repository;
+using Batch.Services.Interface;
 using Batch.Domain.Models;
 using Batch.Services;
 
@@ -29,24 +29,23 @@ class Program
         var serviceProvider = new ServiceCollection()
             .AddRepository(configuration)
             .AddServices(configuration)
+            .AddAplication()
             .BuildServiceProvider();
         return serviceProvider;
     }
 
-    public static void Main()
+    private static async Task Run(IServiceProvider serviceProvider)
+    {
+        
+    }
+
+    public static async Task Main()
     {
         try
         {
             var configuration = BuildConfiguration();
             var serviceProvider = DependencyInjection(configuration);
-            var query = SqlQuery.Select<Product>();
-            Console.WriteLine(query);
-            var files = serviceProvider.GetRequiredService<FileHandler>();
-            foreach (var file in files.GetFiles())
-            {
-                Console.WriteLine(file);
-                if (file.Contains("products_create")) Console.WriteLine("\tProducts for create");
-            }
+            await Run(serviceProvider);
         }
         catch (Exception ex)
         {

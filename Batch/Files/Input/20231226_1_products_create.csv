@@ -1,1 +1,2 @@
 ProductId, BarCode, ProductName, SupplierId, Inventory, Price
+12, 01321300132131, Produto1, 2, 100, 19.99
