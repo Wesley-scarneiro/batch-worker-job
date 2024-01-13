@@ -16,10 +16,11 @@ public class LocalFiles : IFileService
         _outputPath = outputPath;
     }
 
-    private static string PathCombine(string fileName, string path)
+    private static string PathCombine(string path, string fileName)
     {
         return Path.Combine(path, fileName);
     }
+    
     public async Task<IEnumerable<string?>> GetFiles()
     {
         try
@@ -38,7 +39,7 @@ public class LocalFiles : IFileService
     {
         try
         {
-            var bytes = await File.ReadAllBytesAsync(PathCombine(fileName, _inputPath));
+            var bytes = await File.ReadAllBytesAsync(PathCombine(_inputPath, fileName));
             var memoryStream = new MemoryStream(bytes);
             return memoryStream;
         }
@@ -52,9 +53,9 @@ public class LocalFiles : IFileService
     {
         try
         {
-            if (File.Exists(PathCombine(fileName, _outputPath)))
+            if (File.Exists(PathCombine(_outputPath, fileName)))
             {
-                await Task.Run(() => Directory.Move(PathCombine(fileName, _inputPath), PathCombine(fileName, _outputPath)));
+                await Task.Run(() => Directory.Move(PathCombine(fileName, _inputPath), PathCombine(_outputPath, fileName)));
                 return true;
             }
             return false;
@@ -65,8 +66,15 @@ public class LocalFiles : IFileService
         }
     }
 
-    public Task<bool> CreateFile<T>(IEnumerable<T> records)
+    public async Task<bool> CreateFile(string fileName, MemoryStream mstream)
     {
-        throw new NotImplementedException();
+        using var fileStream = new FileStream(Path.Combine(_outputPath, fileName), FileMode.Create, FileAccess.Write);
+        await Task.Run(() =>
+        {
+            var copyMstream = new MemoryStream(mstream.ToArray());
+            copyMstream.WriteTo(fileStream);
+        });
+        if (File.Exists(PathCombine(_outputPath, fileName))) return true;
+        return false;
     }
 }

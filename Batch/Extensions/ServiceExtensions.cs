@@ -9,7 +9,8 @@ public static class ServiceExtensions
     public static IServiceCollection AddServices(this IServiceCollection service, IConfiguration configuration)
     {
         var localServices = new LocalFiles(configuration["Appsettings:FilesPath:Input"], configuration["Appsettings:FilesPath:Output"]);
-        service.AddSingleton(localServices);
+        service.AddSingleton<IFileService>(localServices);
+        service.AddSingleton<ICsvService, CsvService>();
         return service;
     }
 }

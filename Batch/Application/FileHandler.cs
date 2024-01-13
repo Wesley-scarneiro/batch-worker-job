@@ -11,10 +11,12 @@ namespace Batch.Services;
 public class FileHandler
 {
     private readonly IFileService _fileService;
+    private readonly ICsvService _csvService;
 
-    public FileHandler(IFileService fileService)
+    public FileHandler(IFileService fileService, ICsvService csvService)
     {
         _fileService = fileService;
+        _csvService = csvService;
     }
 
     public async Task<IEnumerable<string?>> GetFiles()
@@ -22,9 +24,10 @@ public class FileHandler
         return await _fileService.GetFiles();
     }
 
-    public async Task<Stream> ReadFile(string fileName)
+    public async Task<IEnumerable<T>> ReadFile<T>(string fileName)
     {
-        return await _fileService.ReadFile(fileName); //falta converter em objetos e devolver em um enumerável
+        var stream = await _fileService.ReadFile(fileName);
+        return _csvService.ReadFileCsv<T>(stream);
     }
 
     public async Task<bool> MoveFile(string fileName)
@@ -34,6 +37,9 @@ public class FileHandler
 
     public async Task<bool> CreateFile<T>(IEnumerable<T> records)
     {
-        return await _fileService.CreateFile(records);
+        var mstream = await _csvService.WriteRecords(records);
+        var fileName = $"{DateTime.Now.ToString("yyyymmdd")}_{1}_{typeof(T).Name.ToLower()}.csv";
+        var response = await _fileService.CreateFile(fileName, mstream);
+        return response;
     }
 }

@@ -8,7 +8,7 @@ namespace Batch.Services.Interface;
 public interface IFileService
 {
     public Task<IEnumerable<string?>> GetFiles();
-    public Task<Stream> ReadFile(string path);
-    public Task<bool> Movefile(string path);
-    public Task<bool> CreateFile<T>(IEnumerable<T> records);
+    public Task<Stream> ReadFile(string fileName);
+    public Task<bool> Movefile(string fileName);
+    public Task<bool> CreateFile(string fileName, MemoryStream stream);
 }

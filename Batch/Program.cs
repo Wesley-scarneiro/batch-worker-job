@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Batch.Extensions;
-using Batch.Repository;
+using Batch.Services.Interface;
 using Batch.Domain.Models;
 using Batch.Services;
 
@@ -29,8 +29,14 @@ class Program
         var serviceProvider = new ServiceCollection()
             .AddRepository(configuration)
             .AddServices(configuration)
+            .AddAplication()
             .BuildServiceProvider();
         return serviceProvider;
+    }
+
+    private static async Task Run(IServiceProvider serviceProvider)
+    {
+        
     }
 
     public static async Task Main()
@@ -39,6 +45,7 @@ class Program
         {
             var configuration = BuildConfiguration();
             var serviceProvider = DependencyInjection(configuration);
+            await Run(serviceProvider);
         }
         catch (Exception ex)
         {
