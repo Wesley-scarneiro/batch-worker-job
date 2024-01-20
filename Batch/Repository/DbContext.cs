@@ -28,18 +28,51 @@ public class DbContext : IDbContext
         }
     }
 
-    public Task Delete<T>(IEnumerable<T> records)
+    public async Task<int> Delete<T>(IEnumerable<T> records)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _session.BeginTransaction();
+            var response = await _session.Connection.ExecuteAsync(SqlQuery.Delete<T>(), records);
+            _session.Commit();
+            return response;
+        }
+        catch (Exception)
+        {
+            _session.Rollback();
+            throw;
+        }
     }
 
-    public Task Read<T>(T model)
+    public async Task<IEnumerable<T>> Read<T>()
     {
-        throw new NotImplementedException();
+        try
+        {
+            _session.BeginTransaction();
+            var response = await _session.Connection.QueryAsync<T>(SqlQuery.Select<T>());
+            _session.Commit();
+            return response;
+        }
+        catch (Exception)
+        {
+            _session.Rollback();
+            throw;
+        }
     }
 
-    public Task Update<T>(IEnumerable<T> records)
+    public async Task<int> Update<T>(IEnumerable<T> records)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _session.BeginTransaction();
+            var response = await _session.Connection.ExecuteAsync(SqlQuery.Update<T>(), records);
+            _session.Commit();
+            return response;
+        }
+        catch (Exception)
+        {
+            _session.Rollback();
+            throw;
+        }
     }
 }
