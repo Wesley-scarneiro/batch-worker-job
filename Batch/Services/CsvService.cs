@@ -5,11 +5,12 @@ using CsvHelper;
 namespace Batch.Services;
 public class CsvService : ICsvService
 {
-    public IEnumerable<T> ReadFileCsv<T>(Stream stream)
+    public IEnumerable<T> ReadFileCsv<T>(MemoryStream mstream)
     {
-        using var streamReader = new StreamReader(stream);
+        using var streamReader = new StreamReader(mstream);
         using var csvHelper = new CsvReader(streamReader, CultureInfo.InvariantCulture);
-        var records = csvHelper.GetRecords<T>();
+        var records = csvHelper.GetRecords<T>().ToList();
+        mstream.Close();
         return records;
     }
 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Batch.Extensions;
-using Batch.Services.Interface;
-using Batch.Domain.Models;
-using Batch.Services;
+using Batch.Application;
+using Batch.Application.Jobs;
+using Batch.Application.Interfaces;
 
 namespace Batch;
 class Program
@@ -34,9 +34,15 @@ class Program
         return serviceProvider;
     }
 
+    /*
+        Worker queue settings and job definitions
+    */
     private static async Task Run(IServiceProvider serviceProvider)
     {
-        
+        var worker = serviceProvider.GetRequiredService<IWorker>()
+            .CreateJob<CreateProduct>()
+            .CreateJob<UpdateProduct>();
+        await worker.Run();
     }
 
     public static async Task Main()
