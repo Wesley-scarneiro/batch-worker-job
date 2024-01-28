@@ -14,12 +14,13 @@ public class CsvService : ICsvService
         return records;
     }
 
-    public async Task<MemoryStream> WriteRecords<T>(IEnumerable<T> records)
+    public async Task<byte[]> WriteRecords<T>(IEnumerable<T> records)
     {
-        using var memoryStream = new MemoryStream();
-        using var writer = new StreamWriter(memoryStream);
-        using var csvHelper = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        using var mstream = new MemoryStream();
+        using var streamWriter = new StreamWriter(mstream);
+        using var csvHelper = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
         await csvHelper.WriteRecordsAsync(records);
-        return memoryStream;
+        await streamWriter.FlushAsync();
+        return mstream.ToArray();
     }
 }

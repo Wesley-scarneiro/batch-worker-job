@@ -5,12 +5,6 @@ using Batch.Services.Interface;
 
 namespace Batch.Services;
 
-/*
-    FileHandler faz parte da camada de aplicação,
-    pois manipula um serviço de arquivos.
-    Sua responsabilidade é realizar a leitura, escrita e conversão
-    dos registros em objetos dos arquivos manipulados. 
-*/
 public class FileHandler : IFileHandler
 {
     private List<BatchFile> _files;
@@ -45,9 +39,8 @@ public class FileHandler : IFileHandler
 
     public async Task<bool> CreateFile<T>(IEnumerable<T> records)
     {
-        var mstream = await _csvService.WriteRecords(records);
-        var fileName = $"{DateTime.Now.ToString("yyyymmdd")}_{1}_{typeof(T).Name.ToLower()}.csv";
-        var response = await _fileService.CreateFile(fileName, mstream);
-        return response;
+        var bytes = await _csvService.WriteRecords(records);
+        var fileName = $"{DateTime.Now.ToString("yyyymmdd")}_{1}_{typeof(T).Name.ToLower()}_view.csv";
+        return await _fileService.CreateFile(fileName, bytes);       
     }
 }

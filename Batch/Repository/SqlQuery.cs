@@ -17,7 +17,7 @@ public static class SqlQuery
         WHERE SupplierId = @SupplierId";
 
     private static string _deleteProduct = @"
-        DELETE Products
+        DELETE FROM Products
         WHERE ProductId = @ProductId";
     
     private static string _deleteSupplier = @"
@@ -56,8 +56,8 @@ public static class SqlQuery
     {
         return typeof(T).Name switch
         {
-            "Products" => _deleteProduct,
-            "Suppliers" => _deleteSupplier,
+            "DeleteProduct" => _deleteProduct,
+            "DeleteSupplier" => _deleteSupplier,
             _ => null,
         };
     }

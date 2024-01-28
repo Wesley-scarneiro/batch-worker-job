@@ -8,7 +8,7 @@ using Batch.Application.Interfaces;
 
 namespace Batch.Application.Jobs;
 
-public class UpdateProduct : IJob
+public class JobCreateSupplier : IJob
 {
     private IFileHandler _fileHandler;
     private IDbContext _database;
@@ -23,15 +23,15 @@ public class UpdateProduct : IJob
 
     public async Task<bool> Run()
     {
-        var files = await _fileHandler.GetFiles(TypeProduct.PRODUCT, Operation.UPDATE);
+        var files = await _fileHandler.GetFiles(TypeProduct.SUPPLIER, Operation.CREATE);
         if (files.Any())
         {
             foreach (var file in files)
             {
-                var records = await _fileHandler.ReadFile<Product>(file.Name);
+                var records = await _fileHandler.ReadFile<Supplier>(file.Name);
                 if (records.Any())
                 {
-                    await _database.Update(records);
+                    await _database.Create(records);
                     await _fileHandler.MoveFile(file.Name);
                     continue;
                 }
@@ -39,7 +39,7 @@ public class UpdateProduct : IJob
             }
             return true;
         }
-        _notifier.AddNotification(new Notification(NotificationLevel.WARNING, $"Empty '{nameof(this.GetType)}' files"));
+        _notifier.AddNotification(new Notification(NotificationLevel.WARNING, $"Empty '{GetType().Name}' files"));
         return false;
     }
 }

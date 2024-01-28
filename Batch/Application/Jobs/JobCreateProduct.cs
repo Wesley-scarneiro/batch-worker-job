@@ -1,7 +1,6 @@
 using Batch.Repository.Interface;
 using Batch.Application.Interface;
 using Batch.Domain.Enums;
-using Batch.Services;
 using Batch.Domain.Models;
 using Batch.Application.Notifications.Interfaces;
 using Batch.Application.Notifications;
@@ -9,7 +8,7 @@ using Batch.Application.Interfaces;
 
 namespace Batch.Application.Jobs;
 
-public class CreateProduct : IJob
+public class JobCreateProduct : IJob
 {
     private IFileHandler _fileHandler;
     private IDbContext _database;
@@ -40,7 +39,7 @@ public class CreateProduct : IJob
             }
             return true;
         }
-        _notifier.AddNotification(new Notification(NotificationLevel.WARNING, $"Empty '{nameof(this.GetType)}' files"));
+        _notifier.AddNotification(new Notification(NotificationLevel.WARNING, $"Empty '{GetType().Name}' files"));
         return false;
     }
 }

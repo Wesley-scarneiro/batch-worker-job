@@ -10,5 +10,5 @@ public interface IFileService
     public Task<IEnumerable<string?>> GetFiles();
     public Task<Stream> ReadFile(string fileName);
     public Task<bool> Movefile(string fileName);
-    public Task<bool> CreateFile(string fileName, MemoryStream stream);
+    public Task<bool> CreateFile(string fileName, byte[] bytes);
 }

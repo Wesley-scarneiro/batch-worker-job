@@ -25,6 +25,7 @@ public record BatchFile
         {
             "products" => TypeProduct.PRODUCT,
             "suppliers" => TypeProduct.SUPPLIER,
+            "delete" => TypeProduct.DELETE,
             _ => null
         };
     }
