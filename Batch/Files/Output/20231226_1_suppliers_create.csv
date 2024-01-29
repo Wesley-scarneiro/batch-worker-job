@@ -1,0 +1,11 @@
+SupplierId,SupplierName,ActiveContract
+1,ABC Electronics,true
+2,XYZ Supplies,true
+3,Global Tech,true
+4,Smart Solutions,false
+5,Innovate Innovations,true
+6,Prime Components,true
+7,Dynamic Gadgets,true
+8,United Tech,true
+9,Superior Systems,true
+10,Elite Electronics,false

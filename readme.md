@@ -1,46 +1,53 @@
 # Batch
 
-Exemplo de aplicação de console para manipulação de banco de dados utilizando o micro-orm Dapper para um CRUD a partir de arquivos.
+Uma aplicação simples de console que realiza um CRUD no banco de dados a partir da leitura de arquivos .csv, usando o modelo worker-job.
+
+* Worker: instância que coordena uma fila de trabalhos a serem executados em ordem de chegada (FIFO)
+* Job: instância que representa uma operação ou trabalho a ser executado
+
+## Tecnologias utilizadas
+
+* .NET Core - Console application
+* SQLITE - Database
+* Dapper - Micro ORM
+* CsvHelper - Reading and write of files .csv
 
 ## Camadas
 
 O Batch é modulado em diferentes camadas com suas respectivas responsabilidades. 
-* Domain: contém os modelos e entidades que representam os dados manipulados pela aplicação.
-    * /models: contém os modelos que representam as tabelas do banco de dados manipulados pela aplicação.
-    * /entities: entidades que representam o formato dos dados dos arquivos csv manipulados pela aplicação.
-* Repository: contém as classes e interfaces que manipulam a conexão com o banco de dados. 
-* Services: contém a implementação dos serviços que são utilizados pela aplicação. 
-* Application: contém a implementação da lógica de negócio da aplicação.
-* Extensions: contém as configurações de injeção de dependências da aplicação.
-* Configurations: contém os arquivos de configuração da aplicação.
-* Logging: contém os arquivos de log da aplicação.
-## Contexto da aplicação
-
-O batch foi desenvolvido a pedido de uma rede de supermercados chamada Good-Price.
-
-O sistema de caixa do supermercado possui o seu próprio banco de dados, mas o gerente deseja armazenar alguns dados em outro repositório para fazer estudos e análises sobre os produtos. Então, diariamente o sistema de caixa gera arquivos no formato csv dos novos produtos cadastrados, de alterações de preços, estoques e fornecedores dos produtos.
+* Domain: contém os modelos, entidades e enumerações que representam os dados manipulados pela aplicação.
+* Repository: contém as classes e interfaces que manipulam a conexão com o banco de dados. O banco de dados é manipulado usando o micro-ORM Dapper. 
+* Services: contém a implementação dos serviços que são utilizados pela aplicação:
+    * LocalFiles: manipulação dos arquivos locais com System.IO.File
+    * CsvService: conversão de arquivos .csv em objetos usando CsvHelper
+* Application: contém a implementação da lógica de negócio da aplicação e uso dos serviços implementados:
+    * FileHandler: manipulação do LocalFiles e CsvService
+    * Worker: enfileiramento e execução de jobs
+    * Jobs: operações CRUD a serem executadas
+* Extensions: contém as configurações de injeção de dependências da aplicação
+* Configurations: contém os arquivos de configuração da aplicação
 
 ## Banco de dados da aplicação
 
-A aplicação utiliza o SGBD SQLite para persistência e gerenciamento dos dados que poderão ser analisados pelo gerente.
+A aplicação utiliza o SQLite para persistência e gerenciamento dos dados.
 
 O esquema do banco de dados contém as seguintes tabelas:
-* Products: armazena os registros dos produtos que são comercializados pelas unidades do supermercado.  
-Contém as seguintes colunas:
+* Products: registra tipos de produtos
     * ProductId, BarCode, ProductName, SupplierId, Inventory, Price
-* Suppliers: armazena os registros dos fornecedores que vendem os produtos para o supermercado.  
-Contém as seguintes colunas:
+* Suppliers: registra fornecedores de produtos
     * SupplierId, SupplierName, ActiveContract
 
 ## Layout dos arquivos
 
-O Batch realizará a leitura dos arquivos no formato csv.  
-Os seguintes arquivos são disponibilizados pelo sistema de caixa:
-* YYYYMMDD_VERSION_products_update.csv: contém os dados atuais dos produtos do sistema de caixa que precisam ser atualizados
-    * Cabeçalho: ProductId, ProductName, SupplierId, Inventory, Price
-* YYYYMMDD_VERSION_products_create.csv: contém os dados de novos produtos do sistema de caixa que foram registrados
-    * Cabeçalho: ProductId, BarCode, ProductName, SupplierId, Inventory, Price
-* YYYYMMDD_VERSION_products_delete.csv: contém os dados de novos produtos do sistema de caixa que foram deletados
-    * Cabeçalho: ProductId
+Arquivos que são lidos:
 
-Os arquivos são sempre buscados no diretório files/input e movidos depois do proessamento para o diretório files/output. 
+* YYYYMMDD_VERSION_products_create.csv: dados para cadastrar novos produtos
+* YYYYMMDD_VERSION_products_update.csv: dados para atualizar produtos
+* YYYYMMDD_VERSION_products_delete.csv: dados para remoção de produtos
+
+Arquivos que são gravados:
+
+* YYYYMMDD_VERSION_products_view.csv: dados representando os produtos cadastrados em uma determinada data
+
+
+Os arquivos são sempre buscados no diretório files/input e movidos depois do processamento para o diretório files/output. 

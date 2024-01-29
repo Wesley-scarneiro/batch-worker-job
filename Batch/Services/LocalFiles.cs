@@ -15,11 +15,6 @@ public class LocalFiles : IFileService
         _inputPath = inputPath;
         _outputPath = outputPath;
     }
-
-    private static string PathCombine(string path, string fileName)
-    {
-        return Path.Combine(path, fileName);
-    }
     
     public async Task<IEnumerable<string?>> GetFiles()
     {
@@ -39,7 +34,7 @@ public class LocalFiles : IFileService
     {
         try
         {
-            var bytes = await File.ReadAllBytesAsync(PathCombine(_inputPath, fileName));
+            var bytes = await File.ReadAllBytesAsync(Path.Combine(_inputPath, fileName));
             var memoryStream = new MemoryStream(bytes);
             return memoryStream;
         }
@@ -53,9 +48,9 @@ public class LocalFiles : IFileService
     {
         try
         {
-            if (File.Exists(PathCombine(_outputPath, fileName)))
+            if (File.Exists(Path.Combine(_inputPath, fileName)))
             {
-                await Task.Run(() => Directory.Move(PathCombine(fileName, _inputPath), PathCombine(_outputPath, fileName)));
+                await Task.Run(() => Directory.Move(Path.Combine(_inputPath, fileName), Path.Combine(_outputPath, fileName)));
                 return true;
             }
             return false;
@@ -66,18 +61,13 @@ public class LocalFiles : IFileService
         }
     }
 
-    public async Task<bool> CreateFile(string fileName, MemoryStream mstream)
+    public async Task<bool> CreateFile(string fileName, byte[] byteArray)
     {
         try
         {
             using var fileStream = new FileStream(Path.Combine(_outputPath, fileName), FileMode.Create, FileAccess.Write);
-            await Task.Run(() =>
-            {
-                var copyMstream = new MemoryStream(mstream.ToArray());
-                copyMstream.WriteTo(fileStream);
-            });
-            if (File.Exists(PathCombine(_outputPath, fileName))) return true;
-            return false;
+            await fileStream.WriteAsync(byteArray, 0, byteArray.Length);
+            return File.Exists(Path.Combine(_outputPath, fileName));
         }
         catch(Exception)
         {
