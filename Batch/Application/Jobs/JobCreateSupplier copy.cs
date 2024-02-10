@@ -1,4 +1,4 @@
-using Batch.Repository.Interface;
+using Batch.Repositories.Interface;
 using Batch.Application.Interface;
 using Batch.Domain.Enums;
 using Batch.Domain.Models;
@@ -11,10 +11,10 @@ namespace Batch.Application.Jobs;
 public class JobCreateSupplier : IJob
 {
     private IFileHandler _fileHandler;
-    private IDbContext _database;
+    private IRepository _database;
     private INotifier _notifier;
 
-    public void Init(IFileHandler fileHandler, IDbContext database, INotifier notifier)
+    public void Init(IFileHandler fileHandler, IRepository database, INotifier notifier)
     {
         _fileHandler = fileHandler;
         _database = database;
