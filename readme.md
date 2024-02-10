@@ -93,3 +93,8 @@ Arquivos que são gravados:
 
 
 Os arquivos são sempre buscados no diretório files/input e movidos depois do processamento para o diretório files/output. 
+
+## Prints
+![Início](Batch/files-readme/start.png)
+![Sucesso](Batch/files-readme/success.png)
+![Erro](Batch/files-readme/error.png)
