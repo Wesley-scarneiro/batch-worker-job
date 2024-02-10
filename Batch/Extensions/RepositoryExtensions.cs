@@ -1,5 +1,6 @@
-using Batch.Repository;
-using Batch.Repository.Interface;
+using Batch.Repositories;
+using Batch.Repositories.Interface;
+using Bath.Repository.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +11,8 @@ public static class RepositoryExtensions
     {
         var dbSession = new DbSession(configuration["Appsettings:ConnectionString"]);
         service.AddSingleton(dbSession);
-        service.AddSingleton<IDbContext, DbContext>();
+        service.AddSingleton<IRepository, Repository>();
+        service.AddSingleton<IUnitOfWork, UnitOfWork>();
         return service;
     }
 }

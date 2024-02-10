@@ -1,10 +1,10 @@
 using Batch.Application.Interfaces;
 using Batch.Application.Notifications.Interfaces;
-using Batch.Repository.Interface;
+using Batch.Repositories.Interface;
 
 namespace Batch.Application.Interface;
 public interface IJob
 {
-    public void Init(IFileHandler fileService, IDbContext database, INotifier notifier);
+    public void Init(IFileHandler fileService, IRepository database, INotifier notifier);
     public Task<bool> Run();
 }

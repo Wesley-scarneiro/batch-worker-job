@@ -1,4 +1,4 @@
-namespace Batch.Repository;
+namespace Batch.Repositories;
 public static class SqlQuery
 {
     private static string _updateProduct = @"
@@ -21,7 +21,7 @@ public static class SqlQuery
         WHERE ProductId = @ProductId";
     
     private static string _deleteSupplier = @"
-        DELETE Suppliers
+        DELETE FROM Suppliers
         WHERE SupplierId = @SupplierId";
     
     public static string Insert<T>()
